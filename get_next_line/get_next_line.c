@@ -64,7 +64,7 @@ static	void	read_t_line(t_line **load, int fd)
 	while (!is_new_line(*load))
 	{
 		new_node = ft_new_list(buffer);
-		new_node->data = ft_calloc(sizeof(*buffer), (BUFFER_SIZE + 1));
+		new_node->data = ft_calloc(sizeof(*buffer), (BUFFER_SIZE));
 		output = read(fd, new_node->data, BUFFER_SIZE);
 		if (output == 0 || output == -1)
 		{

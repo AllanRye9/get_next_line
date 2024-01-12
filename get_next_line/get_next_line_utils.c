@@ -9,7 +9,7 @@
 /*   Updated: 2024/01/12 17:18:33 by oallan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
 t_line	*ft_new_list(char *content)
 {

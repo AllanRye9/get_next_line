@@ -33,7 +33,7 @@ t_line	*ft_new_list(char *content);
 
 t_line	*ft_last_list(t_line *last);
 
-void	ft_listadd_back(t_line **list, t_line *new_item);
+void	ft_listadd_back(t_line **list, t_line *new);
 
 void	ft_listclear(t_line **list, void (*del)(void *));
 
