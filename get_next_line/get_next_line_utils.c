@@ -6,14 +6,14 @@
 /*   By: oallan <oallan@student.42abudhabi.ae>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/07 19:32:07 by oallan            #+#    #+#             */
-/*   Updated: 2024/01/07 19:32:10 by oallan           ###   ########.fr       */
+/*   Updated: 2024/01/12 17:18:33 by oallan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line_bonus.h"
 
-l_line	*ft_new_list(char *content)
+t_line	*ft_new_list(char *content)
 {
-	l_line	*new_node;
+	t_line	*new_node;
 
 	new_node = malloc(sizeof(*new_node));
 	if (!new_node)
@@ -24,7 +24,7 @@ l_line	*ft_new_list(char *content)
 	return (new_node);
 }
 
-l_line	*ft_last_list(l_line *last)
+t_line	*ft_last_list(t_line *last)
 {
 	if (!last)
 		return (NULL);
@@ -35,9 +35,9 @@ l_line	*ft_last_list(l_line *last)
 	return (last);
 }
 
-void	ft_listadd_back(l_line **list, l_line *new)
+void	ft_listadd_back(t_line **list, t_line *new)
 {
-	l_line	*temp;
+	t_line	*temp;
 
 	if (!new)
 		return ;
@@ -50,9 +50,9 @@ void	ft_listadd_back(l_line **list, l_line *new)
 	temp->next = new;
 }
 
-void	ft_listclear(l_line **list, void (*del)(void *))
+void	ft_listclear(t_line **list, void (*del)(void *))
 {
-	l_line	*temp_lst;
+	t_line	*temp_lst;
 
 	if (!list || !del)
 		return ;
@@ -66,7 +66,7 @@ void	ft_listclear(l_line **list, void (*del)(void *))
 	*list = NULL;
 }
 
-void    *ft_calloc(size_t count, size_t size)
+void	*ft_calloc(size_t count, size_t size)
 {
 	void			*array;
 	size_t			total_size;

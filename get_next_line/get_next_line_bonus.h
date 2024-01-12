@@ -13,35 +13,34 @@
 # define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
-# define BUFFER_SIZE 10240
+#  define BUFFER_SIZE 1024
 # endif
 
 # ifndef OPEN_MAX
-# define OPEN_MAX 10240
+#  define OPEN_MAX 10240
 # endif
 
 # include <stdlib.h>
 # include <fcntl.h>
-# include <unistd.h>
 # include <limits.h>
+# include <unistd.h>
 
 typedef struct s_line
 {
-    char              *data;
-    int               length;
-    struct   s_line    *next;
-}                   l_line;
+	char			*data;
+	int				length;
+	struct s_line	*next;
+}					t_line;
 
-char    *get_next_line(int fd);
+char	*get_next_line(int fd);
 
-l_line	*ft_new_list(char *content);
+t_line	*ft_new_list(char *content);
 
-l_line	*ft_last_list(l_line *last);
+t_line	*ft_last_list(t_line *last);
 
-void	ft_listadd_back(l_line **list, l_line *new_item);
+void	ft_listadd_back(t_line **list, t_line *new_item);
 
-void	ft_listclear(l_line **list, void (*del)(void *));
+void	ft_listclear(t_line **list, void (*del)(void *));
 
-void    *ft_calloc(size_t count, size_t size);
+void	*ft_calloc(size_t count, size_t size);
 #endif
-
