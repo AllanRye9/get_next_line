@@ -1,41 +1,16 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: oallan <oallan@student.42abudhabi.ae>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/07 19:32:49 by oallan            #+#    #+#             */
-/*   Updated: 2024/01/12 17:16:13 by oallan           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#define GET_NEXT_LINE_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
-# endif
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-# include <stdlib.h>
-# include <fcntl.h>
-# include <unistd.h>
+#define BUFFERSIZE 1024
 
-typedef struct s_line
-{
-	char			*data;
-	int				length;
-	struct s_line	*next;
-}					t_line;
-
-char	*get_next_line(int fd);
-
-t_line	*ft_new_list(char *content);
-
-t_line	*ft_last_list(t_line *last);
-
-void	ft_listadd_back(t_line **list, t_line *new);
-
-void	ft_listclear(t_line **list, void (*del)(void *));
-
-void	*ft_calloc(size_t count, size_t size);
+size_t ft_strlen(const char *s);
+char *ft_strchr(char *s, char c);
+char *ft_strdup(char *str);
+char *ft_strjoin(char *s, char *s1);
+char *ft_substr(char const *s, size_t start, size_t len);
+char *get_next_line(int fd);
 #endif

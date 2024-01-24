@@ -1,136 +1,89 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: oallan <oallan@student.42abudhabi.ae>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/07 19:33:14 by oallan            #+#    #+#             */
-/*   Updated: 2024/01/12 17:13:24 by oallan           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #include "get_next_line.h"
 
-static int	is_new_line(t_line *load);
-static void	read_t_line(t_line **load, int fd);
-static void	create_new_end_list(t_line **load);
-static void	join_t_line(t_line *load, char **line);
-
-char	*get_next_line(int fd)
+char *ft_read_line_end(char *s)
 {
-	static t_line	*load = NULL;
-	char			*line;
+    size_t i;
+    size_t len;
+    char *tem;
+    
+    i = 0;
+    len = 0;
+    while (s[i] != '\0' && s[i] != '\n')
+    i++;
+    if (s[i] == '\n')
+        tem = ft_substr(s, 0, len + 1);
+    else
+        tem = ft_substr(s, 0, len);
+    return (tem);
+    free(tem);
+}
+char *read_line(int fd, char *rd)
+{
+    char *dyn_buff;
+    char *tem;
+    int out;
 
-	line = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	read_t_line(&load, fd);
-	if (!load)
-		return (NULL);
-	join_t_line(load, &line);
-	create_new_end_list(&load);
-	return (line);
+    dyn_buff = (char *)malloc(sizeof(char) * BUFFERSIZE);
+    if (!dyn_buff)
+        return NULL;
+    out = read(fd, dyn_buff, BUFFERSIZE);
+    while (out > 0)
+    {
+        if (!rd)
+        {
+            rd = strdup(dyn_buff);
+        }
+        else
+        {
+            tem = ft_strjoin(rd, dyn_buff);
+            free(rd);
+            rd = tem;
+        }
+        if (ft_strchr(rd, '\n'))
+            break;
+        out = read(fd, dyn_buff, BUFFERSIZE);
+    }
+    if (out == 0 || out == -1)
+    {
+        free(dyn_buff);
+        free(rd);
+        return NULL;
+    }
+    free(dyn_buff);
+    return (rd);
 }
 
-static int	is_new_line(t_line *load)
+char *left_char(char *str)
 {
-	int	i;
+    size_t i;
+    char *dyn_point;
+    size_t j;
 
-	load = ft_last_list(load);
-	if (!load)
-		return (0);
-	i = 0;
-	while (load->data[i] != '\0')
-	{
-		if (load->data[i] == '\n')
-		{
-			load->length = ++i;
-			return (1);
-		}
-		i++;
-	}
-	load->length = i;
-	return (0);
+    i = 0;
+    while (str[i] != '\0' && str[i] != '\n')
+    i++;
+    if (str[i] == '\0')
+        return NULL;
+    dyn_point = (char *)malloc(sizeof(char) *(ft_strlen(str) - i));
+    if (!dyn_point)
+        return NULL;
+    j = 0;
+    while (str[i] != '\0')
+        dyn_point[j++] = str[i++];
+    dyn_point[j] = '\0';
+    return(dyn_point);
+    free(dyn_point);
 }
 
-static	void	read_t_line(t_line **load, int fd)
+char *get_next_line(int fd)
 {
-	int		output;
-	char	*buffer;
-	t_line	*new_node;
+    static char *rd;
+    char        *line;
 
-	output = 0;
-	buffer = NULL;
-	while (!is_new_line(*load))
-	{
-		new_node = ft_new_list(buffer);
-		new_node->data = ft_calloc(sizeof(*buffer), (BUFFER_SIZE));
-		output = read(fd, new_node->data, BUFFER_SIZE);
-		if (output == 0 || output == -1)
-		{
-			free(new_node->data);
-			free(new_node);
-			return ;
-		}
-		new_node->data[BUFFER_SIZE] = '\0';
-		ft_listadd_back(load, new_node);
-	}
-}
-
-static	void	join_t_line(t_line *load, char **line)
-{
-	t_line	*tem;
-	int		total_length;
-	int		i;
-
-	tem = load;
-	total_length = 0;
-	while (tem)
-	{
-		total_length = total_length + tem->length;
-		tem = tem->next;
-	}
-	if (!total_length)
-		return ;
-	*line = malloc(sizeof(**line) * (total_length + 1));
-	if (!line)
-		return ;
-	total_length = 0;
-	while (load && load->data)
-	{
-		i = 0;
-		while (load->data[i] && load->length > i)
-			(*line)[total_length++] = load->data[i++];
-		load = load->next;
-	}
-	(*line)[total_length] = '\0';
-}
-
-static	void	create_new_end_list(t_line **load)
-{
-	t_line	*tem;
-	t_line	*new_node;
-	char	*content;
-	int		size;
-	int		i;
-
-	size = 0;
-	tem = ft_last_list(*load);
-	if (!tem)
-		return ;
-	content = tem->data;
-	size = tem->length;
-	tem->data = NULL;
-	ft_listclear(load, free);
-	i = 0;
-	if (content[size] != '\0')
-	{
-		while (content[size] != '\0')
-			content[i++] = content[size++];
-		content[i] = '\0';
-		new_node = ft_new_list(content);
-		ft_listadd_back(load, new_node);
-	}
-	else
-		free(content);
+    rd = read_line(fd, rd);
+    if (!rd)
+        return NULL;
+    line = ft_read_line_end(rd);
+    rd = left_char(rd);
+    return (line);
 }

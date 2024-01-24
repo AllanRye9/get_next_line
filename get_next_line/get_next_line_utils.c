@@ -1,90 +1,92 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: oallan <oallan@student.42abudhabi.ae>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/07 19:32:07 by oallan            #+#    #+#             */
-/*   Updated: 2024/01/12 17:18:33 by oallan           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #include "get_next_line.h"
 
-t_line	*ft_new_list(char *content)
+size_t ft_strlen(const char *s)
 {
-	t_line	*new_node;
-
-	new_node = malloc(sizeof(*new_node));
-	if (!new_node)
-		return (NULL);
-	new_node->data = content;
-	new_node->length = 0;
-	new_node->next = NULL;
-	return (new_node);
+    size_t i = 0;
+    
+    while (s[i] != '\0')
+        i++;
+    return (i);
 }
 
-t_line	*ft_last_list(t_line *last)
+char *ft_strchr(char *s, char c)
 {
-	if (!last)
-		return (NULL);
-	while (last->next != NULL)
-	{
-		last = last->next;
-	}
-	return (last);
+    int i = 0;
+    
+    if (!s)
+        return NULL;
+    while (s[i] != '\0')
+    {
+        if (s[i] == (unsigned char)c)
+            return (&s[i]);
+    i++;
+    }
+    return (0);
+}
+char *ft_strdup(char *str)
+{
+    char *dyn_point;
+    size_t i;
+    
+    if (!str)
+        return NULL;
+    dyn_point = (char *)malloc(sizeof(char) *(ft_strlen(str) + 1));
+    if (!dyn_point)
+        return NULL;
+    i = 0;
+    while (i < ft_strlen(str))
+    {
+        dyn_point[i] = str[i];
+        i++;
+    }
+    dyn_point[i] = '\0';
+    return (dyn_point);
 }
 
-void	ft_listadd_back(t_line **list, t_line *new)
+char *ft_strjoin(char *s, char *s1)
 {
-	t_line	*temp;
+    size_t i;
+    size_t j;
+    char *joint;
+    size_t v;
 
-	if (!new)
-		return ;
-	if (!*list)
-	{
-		*list = new;
-		return ;
-	}
-	temp = ft_last_list(*list);
-	temp->next = new;
+    v = ((ft_strlen(s) + ft_strlen(s1)) + 1);
+    i = 0;
+    if (!s || !s1)
+        return (0);
+    joint = (char *)malloc(sizeof(char) * v);
+    if (!joint)
+        return NULL;
+    while (i < ft_strlen(s))
+    {
+        joint[i] = s[i];
+        i++;
+    }
+    j = 0;
+    while (j < ft_strlen(s1))
+        joint[i++] = s1[j++];
+    joint[i] = '\0';
+    return(joint);
 }
 
-void	ft_listclear(t_line **list, void (*del)(void *))
+char *ft_substr(char const *s, size_t start, size_t len)
 {
-	t_line	*temp_lst;
-
-	if (!list || !del)
-		return ;
-	while (*list != NULL)
-	{
-		temp_lst = *list;
-		*list = (*list)->next;
-		free(temp_lst->data);
-		free(temp_lst);
-	}
-	*list = NULL;
-}
-
-void	*ft_calloc(size_t count, size_t size)
-{
-	void			*array;
-	size_t			total_size;
-	size_t			i;
-	unsigned char	*value;
-
-	total_size = count * size;
-	if (!total_size || total_size / count != size)
-		return (NULL);
-	array = malloc(total_size);
-	if (array == NULL)
-		return (NULL);
-	i = 0;
-	value = array;
-	while (total_size > i)
-	{
-		value[i] = '\0';
-		i++;
-	}
-	return (value);
+    char *dyn_point;
+    unsigned int i;
+    
+    if (!s)
+        return 0;
+    if (start > ft_strlen(s))
+        return 0;
+    if (len > ft_strlen(s))
+        dyn_point = (char *)malloc((sizeof(char) * ((ft_strlen(s) - start) + 1)));
+    else
+        dyn_point = (char *)malloc(sizeof(char) * (len + 1));
+    if (!dyn_point)
+        return NULL;
+    i = 0;
+    while (i < len)
+        dyn_point[i++] = s[start++];
+    dyn_point[i] = '\0';
+    return (dyn_point);
 }
