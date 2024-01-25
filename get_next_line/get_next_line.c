@@ -1,89 +1,111 @@
 #include "get_next_line.h"
 
-char *ft_read_line_end(char *s)
+static char	*read_lines(char *value, int fd)
 {
-    size_t i;
-    size_t len;
-    char *tem;
-    
-    i = 0;
-    len = 0;
-    while (s[i] != '\0' && s[i] != '\n')
-    i++;
-    if (s[i] == '\n')
-        tem = ft_substr(s, 0, len + 1);
-    else
-        tem = ft_substr(s, 0, len);
-    return (tem);
-    free(tem);
-}
-char *read_line(int fd, char *rd)
-{
-    char *dyn_buff;
-    char *tem;
-    int out;
+	int				rd;
+	char			*buf;
 
-    dyn_buff = (char *)malloc(sizeof(char) * BUFFERSIZE);
-    if (!dyn_buff)
-        return NULL;
-    out = read(fd, dyn_buff, BUFFERSIZE);
-    while (out > 0)
-    {
-        if (!rd)
-        {
-            rd = strdup(dyn_buff);
-        }
-        else
-        {
-            tem = ft_strjoin(rd, dyn_buff);
-            free(rd);
-            rd = tem;
-        }
-        if (ft_strchr(rd, '\n'))
-            break;
-        out = read(fd, dyn_buff, BUFFERSIZE);
-    }
-    if (out == 0 || out == -1)
-    {
-        free(dyn_buff);
-        free(rd);
-        return NULL;
-    }
-    free(dyn_buff);
-    return (rd);
+	rd = 1;
+	while (rd > 0)
+	{
+		buf = (char *) malloc(sizeof(char) * BUFFER_SIZE);
+		rd = read(fd, buf, BUFFER_SIZE);
+		if (rd < 0)
+		{
+			free (buf);
+			return (NULL);
+		}
+		if (rd == 0)
+		{
+			free(buf);
+			break ;
+		}
+		buf[rd] = '\0';
+		value = ft_strjoin(value, buf);
+		free(buf);
+		if (ft_strchr(value) != NULL)
+			break ;
+	}
+	return (value);
 }
 
-char *left_char(char *str)
+static char	*return_lines(char *value, int len, int i)
 {
-    size_t i;
-    char *dyn_point;
-    size_t j;
+	int			j;
+	char		*ptr;
 
-    i = 0;
-    while (str[i] != '\0' && str[i] != '\n')
-    i++;
-    if (str[i] == '\0')
-        return NULL;
-    dyn_point = (char *)malloc(sizeof(char) *(ft_strlen(str) - i));
-    if (!dyn_point)
-        return NULL;
-    j = 0;
-    while (str[i] != '\0')
-        dyn_point[j++] = str[i++];
-    dyn_point[j] = '\0';
-    return(dyn_point);
-    free(dyn_point);
+	ptr = malloc(sizeof(char) * (len + 1));
+	if (!ptr)
+		return (NULL);
+	j = 0;
+	while (j < len)
+		ptr[j++] = value[i++];
+	ptr[j] = '\0';
+	if (ptr[0] == '\0')
+	{
+		free(ptr);
+		free(value);
+		return (NULL);
+	}
+	free(value);
+	return (ptr);
 }
 
-char *get_next_line(int fd)
+static char	*get_lines(char *value)
 {
-    static char *rd;
-    char        *line;
+	int			i;
+	int			len;
 
-    rd = read_line(fd, rd);
-    if (!rd)
-        return NULL;
-    line = ft_read_line_end(rd);
-    rd = left_char(rd);
-    return (line);
+	i = 0;
+	len = (int) ft_strlen(value);
+	while (value[i] && value[i] != '\n')
+		i++;
+	if (value[i] == '\0')
+	{
+		free(value);
+		return (NULL);
+	}
+	else if (value[i] == '\n')
+		i++;
+	len = (len - i )+ 1;
+	return (return_lines(value, len, i));
+}
+
+static char	*copy_lines(char *value)
+{
+	int		i;
+	char	*ptr;
+	int		j;
+
+	i = 0;
+	while (value[i] && value[i] != '\n')
+		i++;
+	if (value[i] == '\n')
+		i++;
+	ptr = malloc(sizeof(char) * (i + 1));
+	if (!ptr)
+		return (NULL);
+	j = 0;
+	while (j < i)
+	{
+		ptr[j] = value[j];
+		j++;
+	}
+	ptr[j] = '\0';
+	return (ptr);
+}
+
+char	*get_next_line(int fd)
+{
+	static char		*value;
+	char			*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	value = read_lines(value, fd);
+	if (!value)
+		return (NULL);
+	line = copy_lines(value);
+	value = get_lines(value);
+	return (line);
 }

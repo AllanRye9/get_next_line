@@ -13,8 +13,7 @@ int main()
     // char *chr;
     int fd;
     char *read;
-    int i;
-
+    int i = 0;
     // int x = ft_strlen(str);
     // st = ft_strjoin(str, str2);
     // s = ft_substr(str, 1, 10);
@@ -24,16 +23,13 @@ int main()
 
     // printf("***TEST FOR GET_NEXT_LINE MAIN FUNCTION***\n");
     fd = open("text.txt", O_RDONLY);
-    read = get_next_line(fd);
-    i = 0;
-    while (read)
+    while ((read = get_next_line(fd)) != NULL)
     {
-        printf("%s\n", read);
+        printf("(Line: %i) %s", ++i, read);
         free(read);
-        read = get_next_line(fd);
     }
-    system("leaks a.out");
     close(fd);
+    printf("\n");
     free(read);
     // free(st);
     // free(s);
