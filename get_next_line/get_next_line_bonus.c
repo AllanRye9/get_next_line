@@ -1,136 +1,109 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: oallan <oallan@student.42abudhabi.ae>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/11 20:37:59 by oallan            #+#    #+#             */
-/*   Updated: 2024/01/12 18:07:16 by oallan           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #include "get_next_line_bonus.h"
 
-static int	is_new_line(t_line *load);
-static void	read_t_line(t_line **load, int fd);
-static void	create_new_end_list(t_line **load);
-static void	join_t_line(t_line *load, char **line);
+static char	*read_lines(char *value, int fd)
+{
+	char			*buf;
+	
+	while (fd > 0)
+	{
+		buf = (char *) malloc(sizeof(char) * BUFFER_SIZE);
+		fd = read(fd, buf, BUFFER_SIZE);
+		if (fd < 0)
+		{
+			free (buf);
+			return (NULL);
+		}
+		if (fd == 0)
+		{
+			free(buf);
+			break ;
+		}
+		buf[fd] = '\0';
+		value = ft_strjoin(value, buf);
+		free(buf);
+		if (ft_strchr(value))
+			break ;
+	}
+	return (value);
+}
+
+static char	*return_lines(char *value, int len, int i)
+{
+	int			j;
+	char		*ptr;
+
+	ptr = malloc(sizeof(char) * (len + 1));
+	if (!ptr)
+		return (NULL);
+	j = 0;
+	while (j < len)
+		ptr[j++] = value[i++];
+	ptr[j] = '\0';
+	if (ptr[0] == '\0')
+	{
+		free(ptr);
+		free(value);
+		return (NULL);
+	}
+	free(value);
+	return (ptr);
+}
+
+static char	*get_lines(char *value)
+{
+	int			i;
+	int			len;
+
+	i = 0;
+	len = (int) ft_strlen(value);
+	while (value[i] && value[i] != '\n')
+		i++;
+	if (value[i] == '\0')
+	{
+		free(value);
+		return (NULL);
+	}
+	else if (value[i] == '\n')
+		i++;
+	len = (len - i )+ 1;
+	return (return_lines(value, len, i));
+}
+
+static char	*copy_lines(char *value)
+{
+	int		i;
+	char	*ptr;
+	int		j;
+
+	i = 0;
+	while (value[i] && value[i] != '\n')
+		i++;
+	if (value[i] == '\n')
+		i++;
+	ptr = malloc(sizeof(char) * (i + 1));
+	if (!ptr)
+		return (NULL);
+	j = 0;
+	while (j < i)
+	{
+		ptr[j] = value[j];
+		j++;
+	}
+	ptr[j] = '\0';
+	return (ptr);
+}
 
 char	*get_next_line(int fd)
 {
-	static t_line	*load[OPEN_MAX] = {NULL};
+	static char		*value[OPEN_MAX];
 	char			*line;
 
-	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	read_t_line(&load[fd], fd);
-	if (!load[fd])
+	value[fd] = read_lines(value[fd], fd);
+	if (!value)
 		return (NULL);
-	join_t_line(load[fd], &line);
-	create_new_end_list(&load[fd]);
+	line = copy_lines(value[fd]);
+	value[fd] = get_lines(value[fd]);
 	return (line);
-}
-
-static int	is_new_line(t_line *load)
-{
-	int	i;
-
-	load = ft_last_list(load);
-	if (!load)
-		return (0);
-	i = 0;
-	while (load->data[i] != '\0')
-	{
-		if (load->data[i] == '\n')
-		{
-			load->length = ++i;
-			return (1);
-		}
-		i++;
-	}
-	load->length = i;
-	return (0);
-}
-
-static	void	read_t_line(t_line **load, int fd)
-{
-	int		output;
-	char	*buffer;
-	t_line	*new_node;
-
-	output = 0;
-	buffer = NULL;
-	while (!is_new_line(*load))
-	{
-		new_node = ft_new_list(buffer);
-		new_node->data = ft_calloc(sizeof(*buffer), (BUFFER_SIZE + 1));
-		output = read(fd, new_node->data, BUFFER_SIZE);
-		if (output == 0 || output == -1)
-		{
-			free(new_node->data);
-			free(new_node);
-			return ;
-		}
-		new_node->data[BUFFER_SIZE] = '\0';
-		ft_listadd_back(load, new_node);
-	}
-}
-
-static	void	join_t_line(t_line *load, char **line)
-{
-	t_line	*tem;
-	int		total_length;
-	int		i;
-
-	tem = load;
-	total_length = 0;
-	while (tem)
-	{
-		total_length = total_length + tem->length;
-		tem = tem->next;
-	}
-	if (!total_length)
-		return ;
-	*line = malloc(sizeof(**line) * (total_length + 1));
-	if (!line)
-		return ;
-	total_length = 0;
-	while (load && load->data)
-	{
-		i = 0;
-		while (load->data[i] && load->length > i)
-			(*line)[total_length++] = load->data[i++];
-		load = load->next;
-	}
-	(*line)[total_length] = '\0';
-}
-
-static	void	create_new_end_list(t_line **load)
-{
-	t_line	*tem;
-	t_line	*new_node;
-	char	*content;
-	int		size;
-	int		i;
-
-	size = 0;
-	tem = ft_last_list(*load);
-	if (!tem)
-		return ;
-	content = tem->data;
-	size = tem->length;
-	tem->data = NULL;
-	ft_listclear(load, free);
-	i = 0;
-	if (content[size] != '\0')
-	{
-		while (content[size] != '\0')
-			content[i++] = content[size++];
-		content[i] = '\0';
-		new_node = ft_new_list(content);
-		ft_listadd_back(load, new_node);
-	}
-	else
-		free(content);
 }

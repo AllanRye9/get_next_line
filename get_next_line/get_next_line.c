@@ -2,28 +2,26 @@
 
 static char	*read_lines(char *value, int fd)
 {
-	int				rd;
 	char			*buf;
-
-	rd = 1;
-	while (rd > 0)
+	
+	while (fd > 0)
 	{
 		buf = (char *) malloc(sizeof(char) * BUFFER_SIZE);
-		rd = read(fd, buf, BUFFER_SIZE);
-		if (rd < 0)
+		fd = read(fd, buf, BUFFER_SIZE);
+		if (fd < 0)
 		{
 			free (buf);
 			return (NULL);
 		}
-		if (rd == 0)
+		if (fd == 0)
 		{
 			free(buf);
 			break ;
 		}
-		buf[rd] = '\0';
+		buf[fd] = '\0';
 		value = ft_strjoin(value, buf);
 		free(buf);
-		if (ft_strchr(value) != NULL)
+		if (ft_strchr(value))
 			break ;
 	}
 	return (value);
