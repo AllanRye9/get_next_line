@@ -101,7 +101,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	value[fd] = read_lines(value[fd], fd);
-	if (!value)
+	if (!value[fd])
 		return (NULL);
 	line = copy_lines(value[fd]);
 	value[fd] = get_lines(value[fd]);
