@@ -46,7 +46,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (s2[i])
 		join[j++] = s2[i++];
 	join[j] = '\0';
-	free ((void *) s1);
 	return (join);
 }
 

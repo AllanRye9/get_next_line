@@ -30,7 +30,7 @@ int main()
     }
     close(fd);
     printf("\n");
-    free(read);
+    system("leaks a.out");
     // free(st);
     // free(s);
     // free(up);

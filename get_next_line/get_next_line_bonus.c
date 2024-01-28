@@ -42,10 +42,8 @@ static char	*return_lines(char *value, int len, int i)
 	if (ptr[0] == '\0')
 	{
 		free(ptr);
-		free(value);
 		return (NULL);
 	}
-	free(value);
 	return (ptr);
 }
 
@@ -59,10 +57,7 @@ static char	*get_lines(char *value)
 	while (value[i] && value[i] != '\n')
 		i++;
 	if (value[i] == '\0')
-	{
-		free(value);
 		return (NULL);
-	}
 	else if (value[i] == '\n')
 		i++;
 	len = (len - i )+ 1;

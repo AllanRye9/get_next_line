@@ -18,11 +18,12 @@ static char	*read_lines(char *value, int fd)
 			free(buf);
 			break ;
 		}
-		buf[fd] = '\0';
+		else
+			buf[fd] = '\0';
 		value = ft_strjoin(value, buf);
-		free(buf);
 		if (ft_strchr(value))
 			break ;
+		free(buf);
 	}
 	return (value);
 }
@@ -42,10 +43,8 @@ static char	*return_lines(char *value, int len, int i)
 	if (ptr[0] == '\0')
 	{
 		free(ptr);
-		free(value);
 		return (NULL);
 	}
-	free(value);
 	return (ptr);
 }
 
@@ -55,7 +54,7 @@ static char	*get_lines(char *value)
 	int			len;
 
 	i = 0;
-	len = (int) ft_strlen(value);
+	len = (int)ft_strlen(value);
 	while (value[i] && value[i] != '\n')
 		i++;
 	if (value[i] == '\0')
@@ -65,7 +64,7 @@ static char	*get_lines(char *value)
 	}
 	else if (value[i] == '\n')
 		i++;
-	len = (len - i )+ 1;
+	len = ((len - i )+ 1);
 	return (return_lines(value, len, i));
 }
 
@@ -99,10 +98,10 @@ char	*get_next_line(int fd)
 	char			*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
+		return NULL;
 	value = read_lines(value, fd);
 	if (!value)
-		return (NULL);
+		return NULL;
 	line = copy_lines(value);
 	value = get_lines(value);
 	return (line);
