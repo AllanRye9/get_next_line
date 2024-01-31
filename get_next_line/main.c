@@ -22,7 +22,7 @@ int main()
     // printf("%s\n%i\n%s\n%s\n%s\n", s, x, st, up, chr);
 
     // printf("***TEST FOR GET_NEXT_LINE MAIN FUNCTION***\n");
-    fd = open("text.txt", O_RDONLY);
+    fd = open("../tests/text.txt", O_RDONLY);
     while ((read = get_next_line(fd)) != NULL)
     {
         printf("(Line: %i) %s", ++i, read);

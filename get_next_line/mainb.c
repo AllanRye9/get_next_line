@@ -22,33 +22,36 @@ int main()
     char *read;
     int i;
     int fd[3];
-    fd[0] = open("test.txt", O_RDONLY);
-    fd[1] = open("test2.c", O_RDONLY);
-    fd[2] = open("text.txt", O_RDONLY);
-    // fd[3] = open("a.txt", O_RDONLY);
-    // fd[4] = open("b.txt", O_RDONLY);
+    fd[0] = open("../tests/t1.c", O_RDONLY);
+    fd[1] = open("../tests/t2.c", O_RDONLY);
+    fd[2] = open("../tests/text.txt", O_RDONLY);
+    fd[3] = open("../tests/a.c", O_RDONLY);
+    fd[4] = open("../tests/b.c", O_RDONLY);
     // fd[5] = open("c.txt", O_RDONLY);
     // fd[6] = open("d.txt", O_RDONLY);
     // fd[7] = open("g.txt", O_RDONLY);
     i = 0;
-    while (i < 3)
+    int j = 0;
+    while (i < 5)
     {
         while ((read = get_next_line(fd[i])) != NULL) 
         {
-            printf("(file: %d - Line:) %s", i, read);
+            printf("(line: ---> ) %s", read);
             free(read);
         }
         printf("\n");
         printf("\n");
-        printf("File # (%d) successfully read", i);
+        printf("File # (%d) successfully read", ++j);
         printf("\n");
         printf("fd: (%i)", fd[i]);
+        printf("\n");
         printf("\n");
     i++;
     }
     printf("\n");
     free(read);
     close(fd[i]);
+    system("leaks a.out");
     // free(st);
     // free(s);
     // free(up);

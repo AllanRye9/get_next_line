@@ -3,23 +3,23 @@
 static char	*read_lines(char *value, int fd)
 {
 	char			*buf;
+	int				out_p;
 	
 	while (fd > 0)
 	{
-		buf = (char *) malloc(sizeof(char) * BUFFER_SIZE);
-		fd = read(fd, buf, BUFFER_SIZE);
-		if (fd < 0)
+		buf = malloc(sizeof(char) * BUFFER_SIZE + 1);
+		out_p = read(fd, buf, BUFFER_SIZE);
+		if (out_p < 0)
 		{
 			free (buf);
 			return (NULL);
 		}
-		if (fd == 0)
+		if (out_p == 0)
 		{
 			free(buf);
 			break ;
 		}
-		else
-			buf[fd] = '\0';
+		buf[out_p] = '\0';
 		value = ft_strjoin(value, buf);
 		if (ft_strchr(value))
 			break ;
@@ -53,8 +53,8 @@ static char	*get_lines(char *value)
 	int			i;
 	int			len;
 
-	i = 0;
 	len = (int)ft_strlen(value);
+	i = 0;
 	while (value[i] && value[i] != '\n')
 		i++;
 	if (value[i] == '\0')
@@ -62,9 +62,9 @@ static char	*get_lines(char *value)
 		free(value);
 		return (NULL);
 	}
-	else if (value[i] == '\n')
+	if (value[i] == '\n')
 		i++;
-	len = ((len - i )+ 1);
+	len = ((len - i ) + 1);
 	return (return_lines(value, len, i));
 }
 

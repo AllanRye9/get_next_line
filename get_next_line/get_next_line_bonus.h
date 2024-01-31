@@ -10,10 +10,6 @@
 #  define BUFFER_SIZE 1024
 # endif
 
-# ifndef OPEN_MAX
-#  define OPEN_MAX 1024
-# endif
-
 size_t	ft_strlen(const char *str);
 char	*ft_strdup(const char *s1);
 char	*ft_strjoin(char const *s1, char const *s2);
