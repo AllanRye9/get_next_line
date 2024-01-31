@@ -26,8 +26,8 @@ char	*next_line(char *str)
 		return (NULL);
 	}
 	p = malloc(sizeof(char) * ft_strlen(str) - i);
-	i++;
 	j = 0;
+	i++;
 	while (str[i])
 		p[j++] = str[i++];
 	p[j] = '\0';
